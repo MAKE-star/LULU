@@ -78,6 +78,74 @@
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
         }
+    
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            cursor: not-allowed;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 0.2s forwards;
+        }
+        .tooltip:hover::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-bottom-color: #1f2937;
+            opacity: 0;
+            animation: fadeIn 0.2s forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Category selection styles */
+        .category-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+        .category-card.selected {
+            border-color: #0d9488;
+            background: #f0fdfa;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+        }
+        .category-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: #0d9488;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
     </style>
 <base target="_blank">
 </head>
@@ -94,9 +162,9 @@
                 </div>
 
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#" onclick="showView('app')" class="text-gray-600 hover:text-teal-600 font-medium transition">Find Work</a>
-                    <a href="#" onclick="openBookingModal()" class="text-gray-600 hover:text-teal-600 font-medium transition">Post a Job</a>
-                    <a href="#how-it-works" class="text-gray-600 hover:text-teal-600 font-medium transition">How it Works</a>
+                    <span class="tooltip text-gray-400 font-medium transition" data-tooltip="Coming Soon">Find Work</span>
+                    <span class="tooltip text-gray-400 font-medium transition" data-tooltip="Coming Soon">Post a Job</span>
+                    <a href="#how-it-works" onclick="scrollToHowItWorks(event)" class="text-gray-600 hover:text-teal-600 font-medium transition cursor-pointer">How it Works</a>
                 </div>
 
                 <div class="flex items-center gap-4">
@@ -796,20 +864,20 @@
         <!-- Categories -->
         <div class="mb-8">
             <h2 class="text-xl font-bold text-gray-900 mb-4">Categories</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div onclick="filterWorkers('all')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="category-container">
+                <div onclick="filterWorkers('all', this)" class="category-card selected relative bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
                     <div class="text-4xl mb-3">🔍</div>
                     <h3 class="font-semibold text-gray-900">All Services</h3>
                 </div>
-                <div onclick="filterWorkers('chef')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                <div onclick="filterWorkers('chef', this)" class="category-card relative bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
                     <div class="text-4xl mb-3">👨‍🍳</div>
                     <h3 class="font-semibold text-gray-900">Private Chefs</h3>
                 </div>
-                <div onclick="filterWorkers('stylist')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                <div onclick="filterWorkers('stylist', this)" class="category-card relative bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
                     <div class="text-4xl mb-3">💇‍♀️</div>
                     <h3 class="font-semibold text-gray-900">Hair Stylists</h3>
                 </div>
-                <div onclick="filterWorkers('mover')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                <div onclick="filterWorkers('mover', this)" class="category-card relative bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
                     <div class="text-4xl mb-3">🚚</div>
                     <h3 class="font-semibold text-gray-900">Moving Help</h3>
                 </div>
@@ -1044,7 +1112,20 @@
         }
 
         // Filter Workers
-        function filterWorkers(category) {
+        function filterWorkers(category, element) {
+            // Remove selected class from all categories
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected class to clicked category (or 'All' if called without element)
+            if (element) {
+                element.classList.add('selected');
+            } else {
+                document.querySelector('.category-card').classList.add('selected');
+            }
+
+            // Filter workers
             if (category === 'all') {
                 renderWorkers(workers);
             } else {
@@ -1118,6 +1199,28 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeBookingModal();
         });
+
+        // Smooth scroll to How it Works section
+        function scrollToHowItWorks(e) {
+            e.preventDefault();
+            // If we're in app view, switch back to landing first
+            if (document.getElementById('app-view').classList.contains('active')) {
+                showView('landing');
+                // Wait for view switch then scroll
+                setTimeout(() => {
+                    const section = document.getElementById('how-it-works');
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 100);
+            } else {
+                // Already on landing page, just scroll
+                const section = document.getElementById('how-it-works');
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
     </script>
 </body>
 </html>

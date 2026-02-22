@@ -1,0 +1,31 @@
+{
+  "name": "lulu-platform",
+  "version": "1.0.0",
+  "description": "Upwork for Africa's Physical Economy",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "deploy": "gh-pages -d ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/lulu-platform.git"
+  },
+  "keywords": [
+    "africa",
+    "gig-economy",
+    "fintech",
+    "marketplace",
+    "informal-workforce"
+  ],
+  "author": "LULU Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/lulu-platform/issues"
+  },
+  "homepage": "https://lulu-platform.io",
+  "devDependencies": {
+    "gh-pages": "^6.1.0",
+    "serve": "^14.2.0"
+  }
+}

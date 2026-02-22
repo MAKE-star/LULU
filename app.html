@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LULU App - Find Verified Help</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .service-card { transition: all 0.3s ease; }
+        .service-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15); }
+        .handshake-code { font-family: 'Courier New', monospace; letter-spacing: 2px; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animate-pulse-slow { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .hide { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- App Navigation -->
+    <nav class="fixed w-full z-50 glass border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">L</div>
+                    <span class="text-2xl font-bold text-gray-900">LULU</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="showView('home')" class="text-gray-600 hover:text-teal-600 font-medium">Home</button>
+                    <button onclick="showView('bookings')" class="text-gray-600 hover:text-teal-600 font-medium">My Bookings</button>
+                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+
+        <!-- Home View -->
+        <div id="home-view" class="view">
+            <!-- Search Section -->
+            <div class="bg-gradient-to-r from-teal-600 to-teal-700 rounded-3xl p-8 text-white mb-8">
+                <h1 class="text-3xl font-bold mb-2">What do you need help with?</h1>
+                <p class="text-teal-100 mb-6">Find verified workers in your area</p>
+
+                <div class="bg-white rounded-2xl p-2 flex flex-col md:flex-row gap-2 shadow-xl">
+                    <div class="flex-1 flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl">
+                        <i class="fas fa-search text-gray-400"></i>
+                        <input type="text" placeholder="Search services (e.g., 'chef', 'mover')..." 
+                            class="bg-transparent w-full outline-none text-gray-800" id="searchInput">
+                    </div>
+                    <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl md:border-l border-gray-200">
+                        <i class="fas fa-map-marker-alt text-teal-600"></i>
+                        <select class="bg-transparent outline-none text-gray-800 cursor-pointer">
+                            <option>Lekki, Lagos</option>
+                            <option>Ikeja, Lagos</option>
+                            <option>Abuja</option>
+                            <option>Port Harcourt</option>
+                        </select>
+                    </div>
+                    <button onclick="searchServices()" class="bg-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-700 transition">
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-900 mb-4">Categories</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div onclick="filterCategory('chef')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                        <div class="text-4xl mb-3">👨‍🍳</div>
+                        <h3 class="font-semibold text-gray-900">Private Chefs</h3>
+                        <p class="text-xs text-gray-500 mt-1">124 available</p>
+                    </div>
+                    <div onclick="filterCategory('stylist')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                        <div class="text-4xl mb-3">💇‍♀️</div>
+                        <h3 class="font-semibold text-gray-900">Hair Stylists</h3>
+                        <p class="text-xs text-gray-500 mt-1">89 available</p>
+                    </div>
+                    <div onclick="filterCategory('mover')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                        <div class="text-4xl mb-3">🚚</div>
+                        <h3 class="font-semibold text-gray-900">Moving Help</h3>
+                        <p class="text-xs text-gray-500 mt-1">56 available</p>
+                    </div>
+                    <div onclick="filterCategory('cleaning')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                        <div class="text-4xl mb-3">🧹</div>
+                        <h3 class="font-semibold text-gray-900">Cleaning</h3>
+                        <p class="text-xs text-gray-500 mt-1">203 available</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workers List -->
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Available Now</h2>
+                    <select class="bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm">
+                        <option>Sort by: Recommended</option>
+                        <option>Price: Low to High</option>
+                        <option>Rating: High to Low</option>
+                    </select>
+                </div>
+
+                <div id="workers-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Worker cards populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Flow -->
+        <div id="booking-flow" class="view hide max-w-2xl mx-auto">
+            <button onclick="showView('home')" class="mb-4 text-gray-600 hover:text-gray-900 flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+
+            <div id="booking-step-1" class="bg-white rounded-3xl shadow-xl p-8">
+                <div class="flex items-center gap-4 mb-6">
+                    <div id="booking-worker-avatar" class="w-20 h-20 bg-gray-200 rounded-2xl flex items-center justify-center text-4xl"></div>
+                    <div>
+                        <h2 id="booking-worker-name" class="text-2xl font-bold text-gray-900"></h2>
+                        <p id="booking-worker-service" class="text-gray-600"></p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span id="booking-worker-rating" class="font-semibold"></span>
+                            <span class="text-gray-400">•</span>
+                            <span id="booking-worker-jobs" class="text-gray-600 text-sm"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">When do you need this service?</label>
+                        <input type="datetime-local" class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Describe the task</label>
+                        <textarea rows="3" placeholder="e.g., I need help moving 3 boxes..." 
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+                        <input type="text" placeholder="Enter your address" 
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500">
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-gray-600">Estimated Total</span>
+                        <span id="booking-price" class="text-2xl font-bold text-gray-900"></span>
+                    </div>
+                    <button onclick="startHandshake()" class="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transition shadow-lg shadow-teal-600/30">
+                        Confirm Booking
+                    </button>
+                </div>
+            </div>
+
+            <!-- Handshake Step -->
+            <div id="booking-step-2" class="hide bg-white rounded-3xl shadow-xl p-8 text-center">
+                <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 text-3xl mx-auto mb-6">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">The LULU Handshake™</h2>
+                <p class="text-gray-600 mb-8">Share this code with your worker when they arrive</p>
+
+                <div class="bg-gray-900 rounded-2xl p-8 mb-8">
+                    <div class="handshake-code text-5xl font-bold text-white tracking-widest" id="handshake-code-display">8 8 2 1</div>
+                </div>
+
+                <div class="bg-teal-50 rounded-xl p-4 mb-6">
+                    <p class="text-sm text-teal-800">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Both you and the worker must enter this code to start the job
+                    </p>
+                </div>
+
+                <button onclick="completeHandshake()" class="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transition">
+                    I've Shared the Code
+                </button>
+            </div>
+
+            <!-- Completion Step -->
+            <div id="booking-step-3" class="hide bg-white rounded-3xl shadow-xl p-8 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-3xl mx-auto mb-6">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Job Completed!</h2>
+                <p class="text-gray-600 mb-8">Confirm completion to release payment</p>
+
+                <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-gray-600">Service Cost</span>
+                        <span class="font-semibold" id="final-price">₦20,000</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-gray-600">Platform Fee (5%)</span>
+                        <span class="font-semibold" id="platform-fee">₦1,000</span>
+                    </div>
+                    <div class="border-t border-gray-200 pt-4 flex justify-between items-center">
+                        <span class="font-bold text-gray-900">Total</span>
+                        <span class="font-bold text-xl text-gray-900" id="total-price">₦21,000</span>
+                    </div>
+                </div>
+
+                <button onclick="completeBooking()" class="w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-green-700 transition shadow-lg shadow-green-600/30">
+                    Release Payment & Review
+                </button>
+            </div>
+        </div>
+
+        <!-- My Bookings View -->
+        <div id="bookings-view" class="view hide">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">My Bookings</h2>
+            <div class="space-y-4">
+                <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">👨‍🍳</div>
+                            <div>
+                                <h3 class="font-bold text-gray-900">Chef Adebayo</h3>
+                                <p class="text-sm text-gray-500">Private Chef Service</p>
+                                <p class="text-xs text-gray-400 mt-1">Feb 25, 2026 • 3:00 PM</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const workers = [
+            { id: 1, name: "Chef Adebayo", service: "Private Chef", rating: 4.9, jobs: 127, price: "₦20,000", emoji: "👨‍🍳", category: "chef", tags: ["Nigerian Cuisine", "Events"] },
+            { id: 2, name: "Stylist Chioma", service: "Hair Stylist", rating: 5.0, jobs: 89, price: "₦8,000", emoji: "💇‍♀️", category: "stylist", tags: ["Braids", "Natural Hair"] },
+            { id: 3, name: "Mover Emeka", service: "Moving Help", rating: 4.8, jobs: 56, price: "₦12,000", emoji: "🚚", category: "mover", tags: ["Home Moving", "Office"] },
+            { id: 4, name: "Masseuse Fatima", service: "Therapeutic Massage", rating: 4.9, jobs: 203, price: "₦15,000", emoji: "💆‍♀️", category: "wellness", tags: ["Swedish", "Deep Tissue"] },
+            { id: 5, name: "Cleaner Mary", service: "Home Cleaning", rating: 4.7, jobs: 312, price: "₦5,000", emoji: "🧹", category: "cleaning", tags: ["Deep Clean", "Regular"] },
+            { id: 6, name: "Driver Ibrahim", service: "Personal Driver", rating: 4.9, jobs: 178, price: "₦10,000", emoji: "🚗", category: "driver", tags: ["Airport", "Daily"] }
+        ];
+
+        let selectedWorker = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorkers(workers);
+        });
+
+        function renderWorkers(workerList) {
+            const container = document.getElementById('workers-list');
+            container.innerHTML = workerList.map(worker => `
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition cursor-pointer" onclick="selectWorker(${worker.id})">
+                    <div class="h-32 bg-gradient-to-r from-teal-400 to-teal-600 relative">
+                        <div class="absolute -bottom-10 left-6">
+                            <div class="w-20 h-20 bg-white rounded-2xl p-1 shadow-lg">
+                                <div class="w-full h-full bg-gray-100 rounded-xl flex items-center justify-center text-4xl">${worker.emoji}</div>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-teal-600">
+                            <i class="fas fa-star mr-1"></i>${worker.rating}
+                        </div>
+                    </div>
+                    <div class="pt-12 pb-6 px-6">
+                        <h3 class="font-bold text-lg text-gray-900">${worker.name}</h3>
+                        <p class="text-sm text-gray-500 mb-3">${worker.service}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${worker.tags.map(tag => `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">${tag}</span>`).join('')}
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div>
+                                <p class="text-xs text-gray-500">From</p>
+                                <p class="font-bold text-gray-900">${worker.price}</p>
+                            </div>
+                            <span class="text-sm text-gray-500">${worker.jobs} jobs</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(category) {
+            const filtered = workers.filter(w => w.category === category);
+            renderWorkers(filtered);
+        }
+
+        function searchServices() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = workers.filter(w => 
+                w.name.toLowerCase().includes(query) || 
+                w.service.toLowerCase().includes(query)
+            );
+            renderWorkers(filtered);
+        }
+
+        function selectWorker(id) {
+            selectedWorker = workers.find(w => w.id === id);
+            if (selectedWorker) {
+                document.getElementById('booking-worker-name').textContent = selectedWorker.name;
+                document.getElementById('booking-worker-service').textContent = selectedWorker.service;
+                document.getElementById('booking-worker-rating').textContent = selectedWorker.rating;
+                document.getElementById('booking-worker-jobs').textContent = `${selectedWorker.jobs} jobs completed`;
+                document.getElementById('booking-price').textContent = selectedWorker.price;
+                document.getElementById('booking-worker-avatar').textContent = selectedWorker.emoji;
+                showView('booking');
+                showBookingStep(1);
+            }
+        }
+
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hide'));
+            document.getElementById('booking-flow').classList.add('hide');
+
+            if (viewName === 'home') document.getElementById('home-view').classList.remove('hide');
+            else if (viewName === 'bookings') document.getElementById('bookings-view').classList.remove('hide');
+            else if (viewName === 'booking') document.getElementById('booking-flow').classList.remove('hide');
+        }
+
+        function showBookingStep(step) {
+            [1, 2, 3].forEach(i => document.getElementById(`booking-step-${i}`).classList.add('hide'));
+            document.getElementById(`booking-step-${step}`).classList.remove('hide');
+        }
+
+        function startHandshake() {
+            const code = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('handshake-code-display').textContent = code.toString().split('').join(' ');
+            showBookingStep(2);
+        }
+
+        function completeHandshake() {
+            showBookingStep(3);
+        }
+
+        function completeBooking() {
+            alert('Payment released! Thank you for using LULU.');
+            showView('home');
+        }
+    </script>
+</body>
+</html>

@@ -3,309 +3,931 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LULU - Formalizing Africa's Invisible Workforce</title>
-    <meta name="description" content="LULU is the trusted marketplace connecting Africa's informal workers with verified opportunities. Upwork for physical services.">
+    <title>LULU - Find Verified Local Help</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Inter', sans-serif; }
-        .gradient-bg { background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #134e4a 100%); }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
-        .service-card { transition: all 0.3s ease; }
-        .service-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15); }
-        .handshake-code { font-family: 'Courier New', monospace; letter-spacing: 2px; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 3px; }
+
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+
+        .trust-pulse::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(13, 148, 136, 0.3);
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Service Card Hover */
+        .service-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Verification Badge */
+        .verified-badge {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+        }
+
+        /* Handshake Animation */
+        .handshake-code {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        /* Hide scrollbar for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* View switching */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* Modal overlay */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
     </style>
+<base target="_blank">
 </head>
 <body class="bg-gray-50">
+
     <!-- Navigation -->
     <nav class="fixed w-full z-50 glass border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="showView('landing')">
                     <div class="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">L</div>
                     <span class="text-2xl font-bold text-gray-900">LULU</span>
+                    <span class="hidden md:block text-xs text-gray-500 ml-2 px-2 py-1 bg-gray-100 rounded-full">Beta</span>
                 </div>
+
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#vision" class="text-gray-600 hover:text-teal-600 font-medium transition">Vision</a>
+                    <a href="#" onclick="showView('app')" class="text-gray-600 hover:text-teal-600 font-medium transition">Find Work</a>
+                    <a href="#" onclick="openBookingModal()" class="text-gray-600 hover:text-teal-600 font-medium transition">Post a Job</a>
                     <a href="#how-it-works" class="text-gray-600 hover:text-teal-600 font-medium transition">How it Works</a>
-                    <a href="#services" class="text-gray-600 hover:text-teal-600 font-medium transition">Services</a>
-                    <a href="https://github.com/yourusername/lulu-platform" target="_blank" class="text-gray-600 hover:text-teal-600 font-medium transition">
-                        <i class="fab fa-github mr-1"></i>GitHub
-                    </a>
                 </div>
-                <button class="bg-teal-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-teal-700 transition shadow-lg shadow-teal-600/30">
-                    View Demo
-                </button>
+
+                <div class="flex items-center gap-4">
+                    <button class="hidden md:block text-gray-600 hover:text-gray-900 font-medium">Log in</button>
+                    <button onclick="showView('app')" class="bg-teal-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-teal-700 transition shadow-lg shadow-teal-600/30">
+                        Get Started
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 gradient-bg text-white">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <div class="animate-slide-up">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur rounded-full text-sm font-semibold mb-6">
-                        <i class="fas fa-rocket"></i>
-                        <span>Now in Lagos, Abuja & Port Harcourt</span>
+    <!-- LANDING PAGE VIEW -->
+    <div id="landing-view" class="view-section active">
+
+        <!-- Hero Section -->
+        <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-teal-50 via-white to-orange-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="animate-slide-up">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-teal-100 text-teal-800 rounded-full text-sm font-semibold mb-6">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Verified & Trusted</span>
+                        </div>
+
+                        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                            Find verified local help for <span class="text-teal-600">anything</span>
+                        </h1>
+
+                        <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                            From moving your luggage to styling your hair. LULU connects you with verified, 
+                            skilled workers in your neighborhood. No more asking strangers—just trusted help, 
+                            one task at a time.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="showView('app')" class="bg-teal-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-teal-700 transition shadow-xl shadow-teal-600/30 flex items-center justify-center gap-2">
+                                <i class="fas fa-search"></i>
+                                Find Help Now
+                            </button>
+                            <button class="bg-white text-gray-700 border-2 border-gray-200 px-8 py-4 rounded-full font-semibold text-lg hover:border-teal-600 hover:text-teal-600 transition flex items-center justify-center gap-2">
+                                <i class="fas fa-briefcase"></i>
+                                Become a Worker
+                            </button>
+                        </div>
+
+                        <div class="mt-8 flex items-center gap-6 text-sm text-gray-500">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-teal-600"></i>
+                                <span>Identity Verified</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-teal-600"></i>
+                                <span>Secure Payments</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-teal-600"></i>
+                                <span>Insurance Covered</span>
+                            </div>
+                        </div>
                     </div>
-                    <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-6">
-                        Upwork for Africa's <span class="text-teal-200">Physical Economy</span>
-                    </h1>
-                    <p class="text-xl text-teal-100 mb-8 leading-relaxed">
-                        LULU formalizes the informal workforce. Connect with verified chefs, stylists, movers, and handymen. 
-                        Built on trust, powered by fintech.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="app.html" class="bg-white text-teal-700 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition shadow-xl flex items-center justify-center gap-2">
-                            <i class="fas fa-external-link-alt"></i>
-                            Launch App Demo
-                        </a>
-                        <a href="https://github.com/yourusername/lulu-platform" target="_blank" class="bg-teal-700 text-white border-2 border-teal-500 px-8 py-4 rounded-full font-semibold text-lg hover:bg-teal-800 transition flex items-center justify-center gap-2">
-                            <i class="fab fa-github"></i>
-                            View on GitHub
-                        </a>
-                    </div>
-                </div>
-                <div class="relative animate-slide-up" style="animation-delay: 0.2s">
-                    <div class="bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
-                        <img src="assets/lulu-dashboard-mockup.png" alt="LULU App Interface" class="rounded-2xl shadow-2xl w-full">
+
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-teal-400 to-orange-400 rounded-3xl transform rotate-3 opacity-20"></div>
+                        <div class="relative bg-white rounded-3xl shadow-2xl p-6 animate-slide-up" style="animation-delay: 0.2s">
+                            <!-- Mock App Interface -->
+                            <div class="bg-gray-50 rounded-2xl p-4 mb-4">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center text-teal-600">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Your Location</p>
+                                        <p class="font-semibold text-gray-900">Lekki Phase 1, Lagos</p>
+                                    </div>
+                                </div>
+
+                                <div class="relative">
+                                    <input type="text" placeholder="What do you need help with?" 
+                                        class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200">
+                                    <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <p class="text-sm font-semibold text-gray-700 mb-3">Popular Services</p>
+
+                                <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-gray-100 hover:border-teal-500 cursor-pointer transition" onclick="showView('app')">
+                                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 text-xl">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900">Private Chef</h4>
+                                        <p class="text-xs text-gray-500">From ₦15,000/meal</p>
+                                    </div>
+                                    <span class="text-teal-600 text-sm font-medium">124 available</span>
+                                </div>
+
+                                <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-gray-100 hover:border-teal-500 cursor-pointer transition" onclick="showView('app')">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-xl">
+                                        <i class="fas fa-cut"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900">Hair Stylist</h4>
+                                        <p class="text-xs text-gray-500">From ₦5,000/session</p>
+                                    </div>
+                                    <span class="text-teal-600 text-sm font-medium">89 available</span>
+                                </div>
+
+                                <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-gray-100 hover:border-teal-500 cursor-pointer transition" onclick="showView('app')">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 text-xl">
+                                        <i class="fas fa-truck-moving"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-900">Moving Help</h4>
+                                        <p class="text-xs text-gray-500">From ₦8,000/hour</p>
+                                    </div>
+                                    <span class="text-teal-600 text-sm font-medium">56 available</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- The Problem -->
-    <section id="vision" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">The $100B Opportunity</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    Africa's informal economy employs 80% of the workforce, yet lacks trust, verification, and financial inclusion.
+        <!-- How It Works - The LULU Handshake -->
+        <section id="how-it-works" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">The LULU Handshake™</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Our 3-step verification process ensures safety for both hirers and workers. 
+                        No cash, no confusion, no strangers.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="relative">
+                        <div class="absolute top-8 left-1/2 w-full h-0.5 bg-gray-200 hidden md:block"></div>
+                        <div class="bg-gray-50 rounded-2xl p-8 relative z-10">
+                            <div class="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 mx-auto shadow-lg shadow-teal-600/30">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-sm font-bold text-teal-600 mb-2">STEP 1</div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">Match & Verify</h3>
+                                <p class="text-gray-600 text-sm leading-relaxed">
+                                    Browse verified profiles with real reviews. Check credentials, 
+                                    portfolios, and identity verification badges.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative">
+                        <div class="absolute top-8 left-1/2 w-full h-0.5 bg-gray-200 hidden md:block"></div>
+                        <div class="bg-gray-50 rounded-2xl p-8 relative z-10">
+                            <div class="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 mx-auto shadow-lg shadow-orange-500/30">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-sm font-bold text-orange-500 mb-2">STEP 2</div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">Secure Handshake</h3>
+                                <p class="text-gray-600 text-sm leading-relaxed">
+                                    Both parties enter a unique 4-digit code to start the job. 
+                                    Payment is held in escrow until completion.
+                                </p>
+                                <div class="mt-4 inline-block bg-white px-4 py-2 rounded-lg border-2 border-orange-200">
+                                    <span class="handshake-code text-orange-600 font-bold text-lg">8 8 2 1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative">
+                        <div class="bg-gray-50 rounded-2xl p-8 relative z-10">
+                            <div class="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 mx-auto shadow-lg shadow-green-500/30">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-sm font-bold text-green-600 mb-2">STEP 3</div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-3">Confirm & Pay</h3>
+                                <p class="text-gray-600 text-sm leading-relaxed">
+                                    Job done? Confirm completion and release payment instantly. 
+                                    Both parties review each other.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Service Categories -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Browse Services</h2>
+                        <p class="text-gray-600">Find help for any task, big or small</p>
+                    </div>
+                    <button onclick="showView('app')" class="text-teal-600 font-semibold hover:text-teal-700 flex items-center gap-2">
+                        View All Categories <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Category Cards -->
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600 text-2xl mb-4">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Private Chefs</h3>
+                        <p class="text-sm text-gray-500 mb-3">Home cooking & events</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Health Certified</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 text-2xl mb-4">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Hair Stylists</h3>
+                        <p class="text-sm text-gray-500 mb-3">Braids, cuts & styling</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-camera"></i>
+                            <span>Portfolio Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 text-2xl mb-4">
+                            <i class="fas fa-truck-moving"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Moving Help</h3>
+                        <p class="text-sm text-gray-500 mb-3">Loaders & transport</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>GPS Tracked</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center text-green-600 text-2xl mb-4">
+                            <i class="fas fa-broom"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Cleaning</h3>
+                        <p class="text-sm text-gray-500 mb-3">Home & office cleaning</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Background Checked</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-pink-100 rounded-xl flex items-center justify-center text-pink-600 text-2xl mb-4">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Masseuses</h3>
+                        <p class="text-sm text-gray-500 mb-3">Therapeutic massage</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-certificate"></i>
+                            <span>Licensed Pro</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 text-2xl mb-4">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Personal Drivers</h3>
+                        <p class="text-sm text-gray-500 mb-3">On-demand chauffeurs</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-id-card"></i>
+                            <span>License Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center text-yellow-600 text-2xl mb-4">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Child Care</h3>
+                        <p class="text-sm text-gray-500 mb-3">Nannies & babysitters</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-heart"></i>
+                            <span>First Aid Cert</span>
+                        </div>
+                    </div>
+
+                    <div class="service-card bg-white rounded-2xl p-6 cursor-pointer border border-gray-100" onclick="showView('app')">
+                        <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center text-red-600 text-2xl mb-4">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-900 mb-1">Handyman</h3>
+                        <p class="text-sm text-gray-500 mb-3">Repairs & maintenance</p>
+                        <div class="flex items-center gap-1 text-xs text-teal-600 font-semibold">
+                            <i class="fas fa-star"></i>
+                            <span>Skilled Verified</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust & Safety Section -->
+        <section class="py-20 bg-gray-900 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">Safety First, Always</h2>
+                        <p class="text-gray-400 text-lg mb-8">
+                            We know letting someone into your home requires trust. That's why we've built 
+                            the most comprehensive verification system for informal workers in Africa.
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-teal-600/20 rounded-lg flex items-center justify-center text-teal-400 flex-shrink-0">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-1">Identity Verification</h4>
+                                    <p class="text-gray-400 text-sm">Government ID + selfie verification for every worker</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-400 flex-shrink-0">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-1">The LULU Handshake™</h4>
+                                    <p class="text-gray-400 text-sm">4-digit code exchange ensures the right person arrived</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400 flex-shrink-0">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-1">Secure Escrow</h4>
+                                    <p class="text-gray-400 text-sm">Your money is held safely until job is completed</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-1">SOS Emergency Button</h4>
+                                    <p class="text-gray-400 text-sm">One-tap emergency alert with live GPS tracking</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-teal-500 to-orange-500 rounded-3xl transform rotate-3 opacity-20"></div>
+                        <div class="relative bg-gray-800 rounded-3xl p-8 border border-gray-700">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-xl">Trust Score</h3>
+                                <span class="text-teal-400 font-bold">98/100</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-400">Identity Verified</span>
+                                        <span class="text-green-400"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-400">Background Check</span>
+                                        <span class="text-green-400"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-400">Skill Certification</span>
+                                        <span class="text-green-400"><i class="fas fa-check"></i></span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-400">Completion Rate</span>
+                                        <span class="text-teal-400">97%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2">
+                                        <div class="bg-teal-500 h-2 rounded-full" style="width: 97%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-6 border-t border-gray-700">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <div class="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center text-white font-bold">JD</div>
+                                        <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-gray-800 flex items-center justify-center">
+                                            <i class="fas fa-check text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">John Doe</p>
+                                        <p class="text-sm text-gray-400">Professional Mover • 4.9★</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Financial Inclusion -->
+        <section class="py-20 bg-gradient-to-br from-teal-600 to-teal-800 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Banking the Unbanked</h2>
+                    <p class="text-teal-100 text-lg max-w-2xl mx-auto">
+                        Every completed job builds your financial identity. Access loans, insurance, 
+                        and financial services through our banking partners.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-8 border border-white/20">
+                        <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-2xl mb-6">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Build Credit History</h3>
+                        <p class="text-teal-100 text-sm leading-relaxed">
+                            Your LULU Trust Score becomes your credit score. Banks use your completion 
+                            history to offer loans at better rates.
+                        </p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-8 border border-white/20">
+                        <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-2xl mb-6">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Instant Payments</h3>
+                        <p class="text-teal-100 text-sm leading-relaxed">
+                            No more waiting for cash. Money goes straight to your LULU wallet, 
+                            withdrawable to any bank account.
+                        </p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-8 border border-white/20">
+                        <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-2xl mb-6">
+                            <i class="fas fa-umbrella"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Insurance Coverage</h3>
+                        <p class="text-teal-100 text-sm leading-relaxed">
+                            Every job includes accident insurance. Protecting both workers and 
+                            hirers during the service period.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex flex-wrap justify-center items-center gap-8 opacity-70">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-university text-2xl"></i>
+                        <span class="font-semibold">Access Bank</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-credit-card text-2xl"></i>
+                        <span class="font-semibold">Interswitch</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-mobile-alt text-2xl"></i>
+                        <span class="font-semibold">Flutterwave</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Workers -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Top Rated Workers</h2>
+                        <p class="text-gray-600">Verified professionals ready to help</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition">
+                            <i class="fas fa-chevron-left text-gray-600"></i>
+                        </button>
+                        <button class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition">
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Worker Card 1 -->
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition">
+                        <div class="h-32 bg-gradient-to-r from-orange-400 to-orange-600 relative">
+                            <div class="absolute -bottom-10 left-6">
+                                <div class="w-20 h-20 bg-white rounded-2xl p-1 shadow-lg">
+                                    <div class="w-full h-full bg-gray-200 rounded-xl flex items-center justify-center text-2xl">👨‍🍳</div>
+                                </div>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-orange-600">
+                                <i class="fas fa-star mr-1"></i>4.9
+                            </div>
+                        </div>
+                        <div class="pt-12 pb-6 px-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-lg text-gray-900">Chef Adebayo</h3>
+                                    <p class="text-sm text-gray-500">Private Chef • Lagos</p>
+                                </div>
+                                <div class="trust-pulse relative w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-teal-600 text-xs"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">Nigerian Cuisine</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">Events</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                <div>
+                                    <p class="text-xs text-gray-500">From</p>
+                                    <p class="font-bold text-gray-900">₦20,000</p>
+                                </div>
+                                <button onclick="openBookingModal('Chef Adebayo', 'Private Chef', '₦20,000')" class="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Worker Card 2 -->
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition">
+                        <div class="h-32 bg-gradient-to-r from-purple-400 to-purple-600 relative">
+                            <div class="absolute -bottom-10 left-6">
+                                <div class="w-20 h-20 bg-white rounded-2xl p-1 shadow-lg">
+                                    <div class="w-full h-full bg-gray-200 rounded-xl flex items-center justify-center text-2xl">💇‍♀️</div>
+                                </div>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-purple-600">
+                                <i class="fas fa-star mr-1"></i>5.0
+                            </div>
+                        </div>
+                        <div class="pt-12 pb-6 px-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-lg text-gray-900">Stylist Chioma</h3>
+                                    <p class="text-sm text-gray-500">Hair Stylist • Abuja</p>
+                                </div>
+                                <div class="trust-pulse relative w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-teal-600 text-xs"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">Braids</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">Natural Hair</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                <div>
+                                    <p class="text-xs text-gray-500">From</p>
+                                    <p class="font-bold text-gray-900">₦8,000</p>
+                                </div>
+                                <button onclick="openBookingModal('Stylist Chioma', 'Hair Stylist', '₦8,000')" class="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Worker Card 3 -->
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition">
+                        <div class="h-32 bg-gradient-to-r from-blue-400 to-blue-600 relative">
+                            <div class="absolute -bottom-10 left-6">
+                                <div class="w-20 h-20 bg-white rounded-2xl p-1 shadow-lg">
+                                    <div class="w-full h-full bg-gray-200 rounded-xl flex items-center justify-center text-2xl">🚚</div>
+                                </div>
+                            </div>
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-blue-600">
+                                <i class="fas fa-star mr-1"></i>4.8
+                            </div>
+                        </div>
+                        <div class="pt-12 pb-6 px-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-bold text-lg text-gray-900">Mover Emeka</h3>
+                                    <p class="text-sm text-gray-500">Moving Help • Lagos</p>
+                                </div>
+                                <div class="trust-pulse relative w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-check text-teal-600 text-xs"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">Home Moving</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">Office</span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                <div>
+                                    <p class="text-xs text-gray-500">From</p>
+                                    <p class="font-bold text-gray-900">₦12,000</p>
+                                </div>
+                                <button onclick="openBookingModal('Mover Emeka', 'Moving Help', '₦12,000')" class="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition">
+                                    Book Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 bg-gray-50">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Ready to get things done?</h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Join thousands of Nigerians using LULU to find trusted help for everyday tasks. 
+                    Your first booking includes free insurance coverage.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showView('app')" class="bg-teal-600 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-teal-700 transition shadow-xl shadow-teal-600/30">
+                        Find Help Now
+                    </button>
+                    <button class="bg-white text-gray-700 border-2 border-gray-300 px-8 py-4 rounded-full font-semibold text-lg hover:border-teal-600 hover:text-teal-600 transition">
+                        Become a Worker
+                    </button>
+                </div>
+
+                <p class="mt-6 text-sm text-gray-500">
+                    Available in Lagos, Abuja, and Port Harcourt. Coming to more cities soon.
                 </p>
             </div>
+        </section>
+    </div>
 
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="bg-red-50 rounded-2xl p-8 border-l-4 border-red-500">
-                    <h3 class="text-xl font-bold text-red-700 mb-4"><i class="fas fa-times-circle mr-2"></i>The Problem</h3>
-                    <ul class="space-y-3 text-gray-700">
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-user-slash text-red-500 mt-1"></i>
-                            <span>No way to verify if a worker is trustworthy</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-money-bill-wave text-red-500 mt-1"></i>
-                            <span>Cash payments = no financial history</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-shield-alt text-red-500 mt-1"></i>
-                            <span>Safety risks for both parties</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-university text-red-500 mt-1"></i>
-                            <span>No access to credit or banking</span>
-                        </li>
-                    </ul>
+    <!-- APP DEMO VIEW (Hidden by default) -->
+    <div id="app-view" class="view-section pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <button onclick="showView('landing')" class="mb-4 text-gray-600 hover:text-gray-900 flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </button>
+
+        <!-- Search Section -->
+        <div class="bg-gradient-to-r from-teal-600 to-teal-700 rounded-3xl p-8 text-white mb-8">
+            <h1 class="text-3xl font-bold mb-2">What do you need help with?</h1>
+            <p class="text-teal-100 mb-6">Find verified workers in your area</p>
+
+            <div class="bg-white rounded-2xl p-2 flex flex-col md:flex-row gap-2 shadow-xl">
+                <div class="flex-1 flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl">
+                    <i class="fas fa-search text-gray-400"></i>
+                    <input type="text" placeholder="Search services..." 
+                        class="bg-transparent w-full outline-none text-gray-800" id="searchInput" onkeyup="searchWorkers()">
                 </div>
+                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl md:border-l border-gray-200">
+                    <i class="fas fa-map-marker-alt text-teal-600"></i>
+                    <select class="bg-transparent outline-none text-gray-800 cursor-pointer">
+                        <option>Lekki, Lagos</option>
+                        <option>Ikeja, Lagos</option>
+                        <option>Abuja</option>
+                    </select>
+                </div>
+                <button onclick="searchWorkers()" class="bg-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-teal-700 transition">
+                    Search
+                </button>
+            </div>
+        </div>
 
-                <div class="bg-teal-50 rounded-2xl p-8 border-l-4 border-teal-500">
-                    <h3 class="text-xl font-bold text-teal-700 mb-4"><i class="fas fa-check-circle mr-2"></i>The LULU Solution</h3>
-                    <ul class="space-y-3 text-gray-700">
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-id-card text-teal-600 mt-1"></i>
-                            <span>Identity verification + skill certification</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-handshake text-teal-600 mt-1"></i>
-                            <span>Secure escrow payments (The Handshake™)</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-map-marker-alt text-teal-600 mt-1"></i>
-                            <span>GPS tracking + SOS safety button</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <i class="fas fa-chart-line text-teal-600 mt-1"></i>
-                            <span>Trust Score = Credit Score for banking</span>
-                        </li>
-                    </ul>
+        <!-- Categories -->
+        <div class="mb-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">Categories</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div onclick="filterWorkers('all')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                    <div class="text-4xl mb-3">🔍</div>
+                    <h3 class="font-semibold text-gray-900">All Services</h3>
+                </div>
+                <div onclick="filterWorkers('chef')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                    <div class="text-4xl mb-3">👨‍🍳</div>
+                    <h3 class="font-semibold text-gray-900">Private Chefs</h3>
+                </div>
+                <div onclick="filterWorkers('stylist')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                    <div class="text-4xl mb-3">💇‍♀️</div>
+                    <h3 class="font-semibold text-gray-900">Hair Stylists</h3>
+                </div>
+                <div onclick="filterWorkers('mover')" class="service-card bg-white rounded-2xl p-6 border border-gray-200 cursor-pointer text-center hover:border-teal-500">
+                    <div class="text-4xl mb-3">🚚</div>
+                    <h3 class="font-semibold text-gray-900">Moving Help</h3>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- How It Works -->
-    <section id="how-it-works" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">The LULU Handshake™</h2>
-                <p class="text-lg text-gray-600">Three steps to trusted transactions</p>
+        <!-- Workers Grid -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Available Workers</h2>
+                <span class="text-gray-500 text-sm" id="worker-count">Showing all workers</span>
             </div>
+            <div id="workers-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-2xl p-8 shadow-lg text-center">
-                    <div class="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 mx-auto">
-                        <i class="fas fa-search"></i>
+    <!-- BOOKING MODAL -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-overlay absolute inset-0" onclick="closeBookingModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto relative z-10">
+
+                <!-- Step 1: Booking Form -->
+                <div id="modal-step-1" class="p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">Book Service</h2>
+                        <button onclick="closeBookingModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
                     </div>
-                    <div class="text-sm font-bold text-teal-600 mb-2">STEP 1</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Find & Book</h3>
-                    <p class="text-gray-600 text-sm">Browse verified workers by category, location, and reviews. View portfolios and credentials.</p>
+
+                    <div class="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl">
+                        <div id="modal-worker-avatar" class="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center text-3xl"></div>
+                        <div>
+                            <h3 id="modal-worker-name" class="font-bold text-lg text-gray-900"></h3>
+                            <p id="modal-worker-service" class="text-gray-600"></p>
+                            <p id="modal-worker-price" class="text-teal-600 font-semibold"></p>
+                        </div>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); goToHandshake();" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">When do you need this?</label>
+                            <input type="datetime-local" required class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Describe the task</label>
+                            <textarea rows="3" placeholder="e.g., I need help moving..." required class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Your Address</label>
+                            <input type="text" placeholder="Enter full address" required class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transition shadow-lg shadow-teal-600/30">
+                            Continue to Payment
+                        </button>
+                    </form>
                 </div>
 
-                <div class="bg-white rounded-2xl p-8 shadow-lg text-center relative">
-                    <div class="absolute top-1/2 -right-4 w-8 h-0.5 bg-gray-300 hidden md:block"></div>
-                    <div class="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 mx-auto">
+                <!-- Step 2: Handshake -->
+                <div id="modal-step-2" class="p-8 hidden text-center">
+                    <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+
+                    <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 text-3xl mx-auto mb-6">
                         <i class="fas fa-handshake"></i>
                     </div>
-                    <div class="text-sm font-bold text-orange-500 mb-2">STEP 2</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Secure Handshake</h3>
-                    <p class="text-gray-600 text-sm mb-3">Both parties enter a 4-digit code to start. Payment held in escrow.</p>
-                    <div class="inline-block bg-orange-50 px-4 py-2 rounded-lg border-2 border-orange-200">
-                        <span class="handshake-code text-orange-600 font-bold text-lg">8 8 2 1</span>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">The LULU Handshake™</h2>
+                    <p class="text-gray-600 mb-6">Share this code with your worker when they arrive</p>
+
+                    <div class="bg-gray-900 rounded-2xl p-6 mb-6">
+                        <div class="handshake-code text-4xl font-bold text-white tracking-widest" id="handshake-code">8 8 2 1</div>
                     </div>
-                </div>
 
-                <div class="bg-white rounded-2xl p-8 shadow-lg text-center">
-                    <div class="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center text-white text-2xl mb-6 mx-auto">
-                        <i class="fas fa-check-double"></i>
+                    <div class="bg-teal-50 rounded-xl p-4 mb-6 text-left">
+                        <p class="text-sm text-teal-800">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Payment of <span id="handshake-amount">₦20,000</span> is held in escrow. Both parties must enter this code to start the job.
+                        </p>
                     </div>
-                    <div class="text-sm font-bold text-green-600 mb-2">STEP 3</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Confirm & Pay</h3>
-                    <p class="text-gray-600 text-sm">Job complete? Release payment instantly. Build your Trust Score with every transaction.</p>
+
+                    <button onclick="completeBooking()" class="w-full bg-teal-600 text-white py-4 rounded-xl font-semibold text-lg hover:bg-teal-700 transition">
+                        I've Shared the Code
+                    </button>
+                </div>
+
+                <!-- Step 3: Success -->
+                <div id="modal-step-3" class="p-8 hidden text-center">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-3xl mx-auto mb-6">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
+                    <p class="text-gray-600 mb-6">Your worker has been notified and will arrive at the scheduled time.</p>
+
+                    <div class="bg-gray-50 rounded-xl p-4 mb-6 text-left">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Booking ID</span>
+                            <span class="font-mono font-semibold">#LULU-8821</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Status</span>
+                            <span class="text-yellow-600 font-semibold">Awaiting Handshake</span>
+                        </div>
+                    </div>
+
+                    <button onclick="closeBookingModal()" class="w-full bg-gray-900 text-white py-4 rounded-xl font-semibold text-lg hover:bg-gray-800 transition">
+                        Done
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Services Grid -->
-    <section id="services" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Service Categories</h2>
-                <p class="text-lg text-gray-600">From heavy labor to premium lifestyle services</p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">👨‍🍳</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Private Chefs</h3>
-                    <p class="text-xs text-gray-500 mb-3">Health certified</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">💇‍♀️</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Hair Stylists</h3>
-                    <p class="text-xs text-gray-500 mb-3">Portfolio verified</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">🚚</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Moving Help</h3>
-                    <p class="text-xs text-gray-500 mb-3">GPS tracked</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">💆‍♀️</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Masseuses</h3>
-                    <p class="text-xs text-gray-500 mb-3">Licensed pros</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">🧹</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Cleaning</h3>
-                    <p class="text-xs text-gray-500 mb-3">Background checked</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">🚗</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Drivers</h3>
-                    <p class="text-xs text-gray-500 mb-3">License verified</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">👶</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Child Care</h3>
-                    <p class="text-xs text-gray-500 mb-3">First aid certified</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-
-                <div class="service-card bg-white rounded-2xl p-6 border border-gray-200 text-center">
-                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto">🔧</div>
-                    <h3 class="font-bold text-gray-900 mb-1">Handyman</h3>
-                    <p class="text-xs text-gray-500 mb-3">Skill tested</p>
-                    <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
-                        <i class="fas fa-shield-alt mr-1"></i>Verified
-                    </span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tech Stack -->
-    <section class="py-20 bg-gray-900 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold mb-4">Open Source Tech Stack</h2>
-                <p class="text-gray-400">Built with modern, scalable technologies</p>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div class="p-6 bg-gray-800 rounded-xl">
-                    <i class="fab fa-react text-4xl text-blue-400 mb-3"></i>
-                    <h4 class="font-semibold">React Native</h4>
-                    <p class="text-sm text-gray-400 mt-1">Mobile App</p>
-                </div>
-                <div class="p-6 bg-gray-800 rounded-xl">
-                    <i class="fab fa-node text-4xl text-green-400 mb-3"></i>
-                    <h4 class="font-semibold">Node.js</h4>
-                    <p class="text-sm text-gray-400 mt-1">Backend API</p>
-                </div>
-                <div class="p-6 bg-gray-800 rounded-xl">
-                    <i class="fas fa-database text-4xl text-purple-400 mb-3"></i>
-                    <h4 class="font-semibold">PostgreSQL</h4>
-                    <p class="text-sm text-gray-400 mt-1">Database</p>
-                </div>
-                <div class="p-6 bg-gray-800 rounded-xl">
-                    <i class="fab fa-aws text-4xl text-orange-400 mb-3"></i>
-                    <h4 class="font-semibold">AWS</h4>
-                    <p class="text-sm text-gray-400 mt-1">Cloud Infrastructure</p>
-                </div>
-            </div>
-
-            <div class="mt-12 text-center">
-                <a href="https://github.com/yourusername/lulu-platform" target="_blank" class="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition">
-                    <i class="fab fa-github text-xl"></i>
-                    <span>Star on GitHub</span>
-                </a>
-            </div>
-        </div>
-    </section>
+    </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-950 text-gray-400 py-12 border-t border-gray-800">
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-8 mb-8">
                 <div>
@@ -313,41 +935,189 @@
                         <div class="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white font-bold">L</div>
                         <span class="text-xl font-bold text-white">LULU</span>
                     </div>
-                    <p class="text-sm">Formalizing Africa's invisible workforce through trust and technology.</p>
+                    <p class="text-sm leading-relaxed">
+                        Formalizing Africa's invisible workforce through trust, technology, and financial inclusion.
+                    </p>
                 </div>
+
                 <div>
-                    <h4 class="text-white font-semibold mb-4">Project</h4>
+                    <h4 class="text-white font-semibold mb-4">For Hirers</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-teal-400 transition">Documentation</a></li>
-                        <li><a href="#" class="hover:text-teal-400 transition">API Reference</a></li>
-                        <li><a href="#" class="hover:text-teal-400 transition">Contributing</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">How it Works</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Safety</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Pricing</a></li>
                     </ul>
                 </div>
+
                 <div>
-                    <h4 class="text-white font-semibold mb-4">Community</h4>
+                    <h4 class="text-white font-semibold mb-4">For Workers</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-teal-400 transition">Discord</a></li>
-                        <li><a href="#" class="hover:text-teal-400 transition">Twitter/X</a></li>
-                        <li><a href="#" class="hover:text-teal-400 transition">LinkedIn</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Become a Worker</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Trust Score</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Community</a></li>
                     </ul>
                 </div>
+
                 <div>
-                    <h4 class="text-white font-semibold mb-4">Legal</h4>
+                    <h4 class="text-white font-semibold mb-4">Company</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-teal-400 transition">MIT License</a></li>
-                        <li><a href="#" class="hover:text-teal-400 transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-teal-400 transition">Contact</a></li>
                     </ul>
                 </div>
             </div>
+
             <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-sm">© 2026 LULU Platform. Open source under MIT License.</p>
-                <div class="flex gap-4">
-                    <a href="#" class="hover:text-white transition"><i class="fab fa-github"></i></a>
+                <p class="text-sm">© 2026 LULU Technologies. All rights reserved.</p>
+                <div class="flex gap-6">
                     <a href="#" class="hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
                     <a href="#" class="hover:text-white transition"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <script>
+        // Worker Data
+        const workers = [
+            { id: 1, name: "Chef Adebayo", service: "Private Chef", rating: 4.9, jobs: 127, price: "₦20,000", emoji: "👨‍🍳", category: "chef", tags: ["Nigerian", "Continental"] },
+            { id: 2, name: "Stylist Chioma", service: "Hair Stylist", rating: 5.0, jobs: 89, price: "₦8,000", emoji: "💇‍♀️", category: "stylist", tags: ["Braids", "Natural"] },
+            { id: 3, name: "Mover Emeka", service: "Moving Help", rating: 4.8, jobs: 56, price: "₦12,000", emoji: "🚚", category: "mover", tags: ["Home", "Office"] },
+            { id: 4, name: "Masseuse Fatima", service: "Therapeutic Massage", rating: 4.9, jobs: 203, price: "₦15,000", emoji: "💆‍♀️", category: "wellness", tags: ["Swedish", "Deep Tissue"] },
+            { id: 5, name: "Cleaner Mary", service: "Home Cleaning", rating: 4.7, jobs: 312, price: "₦5,000", emoji: "🧹", category: "cleaning", tags: ["Deep Clean", "Regular"] },
+            { id: 6, name: "Driver Ibrahim", service: "Personal Driver", rating: 4.9, jobs: 178, price: "₦10,000", emoji: "🚗", category: "driver", tags: ["Airport", "Daily"] }
+        ];
+
+        let currentWorker = null;
+
+        // View Switching
+        function showView(viewName) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+
+            if (viewName === 'landing') {
+                document.getElementById('landing-view').classList.add('active');
+                window.scrollTo(0, 0);
+            } else if (viewName === 'app') {
+                document.getElementById('app-view').classList.add('active');
+                renderWorkers(workers);
+            }
+        }
+
+        // Render Workers in App View
+        function renderWorkers(workerList) {
+            const grid = document.getElementById('workers-grid');
+            document.getElementById('worker-count').textContent = `Showing ${workerList.length} workers`;
+
+            grid.innerHTML = workerList.map(worker => `
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition">
+                    <div class="h-32 bg-gradient-to-r from-teal-400 to-teal-600 relative">
+                        <div class="absolute -bottom-10 left-6">
+                            <div class="w-20 h-20 bg-white rounded-2xl p-1 shadow-lg">
+                                <div class="w-full h-full bg-gray-100 rounded-xl flex items-center justify-center text-4xl">${worker.emoji}</div>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-teal-600">
+                            <i class="fas fa-star mr-1"></i>${worker.rating}
+                        </div>
+                    </div>
+                    <div class="pt-12 pb-6 px-6">
+                        <h3 class="font-bold text-lg text-gray-900">${worker.name}</h3>
+                        <p class="text-sm text-gray-500 mb-2">${worker.service}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${worker.tags.map(tag => `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md">${tag}</span>`).join('')}
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div>
+                                <p class="text-xs text-gray-500">From</p>
+                                <p class="font-bold text-gray-900">${worker.price}</p>
+                            </div>
+                            <button onclick="openBookingModal('${worker.name}', '${worker.service}', '${worker.price}', '${worker.emoji}')" 
+                                class="bg-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-teal-700 transition">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Workers
+        function filterWorkers(category) {
+            if (category === 'all') {
+                renderWorkers(workers);
+            } else {
+                const filtered = workers.filter(w => w.category === category);
+                renderWorkers(filtered);
+            }
+        }
+
+        // Search Workers
+        function searchWorkers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = workers.filter(w => 
+                w.name.toLowerCase().includes(query) || 
+                w.service.toLowerCase().includes(query) ||
+                w.tags.some(tag => tag.toLowerCase().includes(query))
+            );
+            renderWorkers(filtered);
+        }
+
+        // Booking Modal Functions
+        function openBookingModal(name, service, price, emoji = '👤') {
+            currentWorker = { name, service, price, emoji };
+            document.getElementById('modal-worker-name').textContent = name;
+            document.getElementById('modal-worker-service').textContent = service;
+            document.getElementById('modal-worker-price').textContent = price;
+            document.getElementById('modal-worker-avatar').textContent = emoji;
+            document.getElementById('handshake-amount').textContent = price;
+
+            // Reset modal steps
+            document.getElementById('modal-step-1').classList.remove('hidden');
+            document.getElementById('modal-step-2').classList.add('hidden');
+            document.getElementById('modal-step-3').classList.add('hidden');
+
+            document.getElementById('booking-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function goToHandshake() {
+            // Generate random code
+            const code = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('handshake-code').textContent = code.toString().split('').join(' ');
+
+            document.getElementById('modal-step-1').classList.add('hidden');
+            document.getElementById('modal-step-2').classList.remove('hidden');
+        }
+
+        function completeBooking() {
+            document.getElementById('modal-step-2').classList.add('hidden');
+            document.getElementById('modal-step-3').classList.remove('hidden');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add click handlers to service cards
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeBookingModal();
+        });
+    </script>
 </body>
 </html>

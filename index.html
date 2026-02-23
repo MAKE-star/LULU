@@ -994,6 +994,324 @@
         </div>
     </div>
 
+    
+    <!-- ONBOARDING FLOW DEMO SECTION -->
+    <section id="onboarding-flow" class="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-teal-900 text-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">LULU Onboarding Flow</h2>
+                <p class="text-slate-300 text-lg max-w-2xl mx-auto">
+                    5-step NIN-based verification ensuring trust from day one. 
+                    Try the interactive demo below.
+                </p>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="flex justify-center mb-8">
+                <div class="flex items-center gap-2 bg-white/10 backdrop-blur rounded-full p-2" id="progress-indicator">
+                    <div class="step-dot w-3 h-3 rounded-full bg-teal-400" data-step="1"></div>
+                    <div class="step-line w-8 h-0.5 bg-slate-600"></div>
+                    <div class="step-dot w-3 h-3 rounded-full bg-slate-600" data-step="2"></div>
+                    <div class="step-line w-8 h-0.5 bg-slate-600"></div>
+                    <div class="step-dot w-3 h-3 rounded-full bg-slate-600" data-step="3"></div>
+                    <div class="step-line w-8 h-0.5 bg-slate-600"></div>
+                    <div class="step-dot w-3 h-3 rounded-full bg-slate-600" data-step="4"></div>
+                    <div class="step-line w-8 h-0.5 bg-slate-600"></div>
+                    <div class="step-dot w-3 h-3 rounded-full bg-slate-600" data-step="5"></div>
+                </div>
+            </div>
+
+            <!-- Step 1: Identity Entry -->
+            <div id="onboard-step-1" class="onboard-step max-w-md mx-auto">
+                <div class="bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                            🆔
+                        </div>
+                        <h3 class="text-xl font-bold">Step 1: Identity Entry</h3>
+                        <p class="text-slate-400 text-sm mt-2">Enter your NIN to begin verification</p>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); goToStep(2);" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">National Identity Number (NIN)</label>
+                            <input type="text" placeholder="12345678901" maxlength="11" 
+                                class="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
+                            <input type="email" placeholder="you@example.com" 
+                                class="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2">
+                            <span>Verify Identity</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <p class="text-center text-sm text-slate-400 mt-4">
+                        Don't have an email? 
+                        <a href="#" class="text-teal-400 hover:underline">Sign up here</a>
+                    </p>
+
+                    <div class="mt-6 p-4 bg-teal-500/20 rounded-xl border border-teal-500/30">
+                        <p class="text-xs text-teal-200 flex items-center gap-2">
+                            <i class="fas fa-info-circle"></i>
+                            Instant background check + Welcome email sent
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Verified Identity Display -->
+            <div id="onboard-step-2" class="onboard-step max-w-md mx-auto hidden">
+                <div class="bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                            ✅
+                        </div>
+                        <h3 class="text-xl font-bold">Step 2: Identity Verified</h3>
+                        <p class="text-slate-400 text-sm mt-2">Auto-fetched from government database</p>
+                    </div>
+
+                    <form onsubmit="event.preventDefault(); goToStep(3);" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Legal Name</label>
+                            <input type="text" value="ADEBAYO CHUKWUEMEKA JOHN" disabled 
+                                class="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-slate-400 cursor-not-allowed">
+                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                <i class="fas fa-lock"></i> Uneditable - from NIMC
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Date of Birth</label>
+                            <input type="text" value="15 March 1990" disabled 
+                                class="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-slate-400 cursor-not-allowed">
+                            <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                <i class="fas fa-lock"></i> Uneditable - from NIMC
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Phone Number *</label>
+                            <input type="tel" placeholder="+234 800 000 0000" 
+                                class="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Business Name (Optional)</label>
+                            <input type="text" placeholder="e.g., Chef Bayo Services" 
+                                class="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-teal-500">
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-semibold transition">
+                            Continue
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Step 3: Liveness Check -->
+            <div id="onboard-step-3" class="onboard-step max-w-md mx-auto hidden">
+                <div class="bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                            📷
+                        </div>
+                        <h3 class="text-xl font-bold">Step 3: Face Match</h3>
+                        <p class="text-slate-400 text-sm mt-2">Verify your identity with a selfie</p>
+                    </div>
+
+                    <div class="relative mb-6">
+                        <div class="aspect-square bg-slate-800 rounded-2xl border-2 border-dashed border-slate-600 flex flex-col items-center justify-center cursor-pointer hover:border-teal-500 transition" onclick="simulateFaceMatch()">
+                            <div id="camera-placeholder">
+                                <i class="fas fa-camera text-4xl text-slate-500 mb-3"></i>
+                                <p class="text-slate-400 text-sm">Tap to capture</p>
+                            </div>
+                            <div id="face-scanning" class="hidden text-center">
+                                <div class="w-20 h-20 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                                <p class="text-teal-400 text-sm">Matching face to NIN...</p>
+                            </div>
+                            <div id="face-success" class="hidden text-center">
+                                <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-check text-3xl text-white"></i>
+                                </div>
+                                <p class="text-green-400 text-sm">Face matched successfully!</p>
+                            </div>
+                        </div>
+
+                        <!-- Face overlay guide -->
+                        <div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-30">
+                            <div class="w-48 h-48 border-2 border-white rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-xl mb-4">
+                        <i class="fas fa-shield-alt text-teal-400"></i>
+                        <p class="text-xs text-slate-300">Your biometric data is encrypted and never stored</p>
+                    </div>
+
+                    <button id="continue-btn-3" onclick="goToStep(4)" disabled 
+                        class="w-full bg-slate-600 text-slate-400 py-3 rounded-xl font-semibold transition cursor-not-allowed">
+                        Continue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Role Selection -->
+            <div id="onboard-step-4" class="onboard-step max-w-lg mx-auto hidden">
+                <div class="bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                            🎯
+                        </div>
+                        <h3 class="text-xl font-bold">Step 4: How will you use LULU?</h3>
+                        <p class="text-slate-400 text-sm mt-2">Select your primary role</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <button onclick="selectRole('hirer')" id="role-hirer" 
+                            class="role-card p-6 bg-slate-800 border-2 border-slate-600 rounded-2xl text-center hover:border-teal-500 transition group">
+                            <div class="text-4xl mb-3 group-hover:scale-110 transition">👔</div>
+                            <h4 class="font-bold text-lg mb-2">I want to Hire</h4>
+                            <p class="text-sm text-slate-400">Find verified workers for tasks</p>
+                        </button>
+
+                        <button onclick="selectRole('worker')" id="role-worker" 
+                            class="role-card p-6 bg-slate-800 border-2 border-slate-600 rounded-2xl text-center hover:border-teal-500 transition group">
+                            <div class="text-4xl mb-3 group-hover:scale-110 transition">🛠️</div>
+                            <h4 class="font-bold text-lg mb-2">I want to Work</h4>
+                            <p class="text-sm text-slate-400">Offer services & earn money</p>
+                        </button>
+                    </div>
+
+                    <button id="continue-btn-4" onclick="goToStep(5)" disabled 
+                        class="w-full bg-slate-600 text-slate-400 py-3 rounded-xl font-semibold transition cursor-not-allowed">
+                        Continue to Dashboard
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Dashboard with Guardrail -->
+            <div id="onboard-step-5" class="onboard-step max-w-4xl mx-auto hidden">
+                <div class="bg-white/10 backdrop-blur rounded-3xl p-8 border border-white/20">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-teal-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                            🏠
+                        </div>
+                        <h3 class="text-xl font-bold">Step 5: Your Dashboard</h3>
+                        <p class="text-slate-400 text-sm mt-2" id="dashboard-subtitle">Welcome to LULU</p>
+                    </div>
+
+                    <!-- Hirer Dashboard -->
+                    <div id="hirer-dashboard" class="hidden">
+                        <div class="bg-green-500/20 border border-green-500/30 rounded-xl p-4 mb-6">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                                <div>
+                                    <p class="font-semibold text-green-400">Identity Verified</p>
+                                    <p class="text-sm text-green-200">You can now post jobs and hire workers</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-slate-800 rounded-xl p-6 text-center">
+                                <i class="fas fa-plus-circle text-3xl text-teal-400 mb-3"></i>
+                                <h4 class="font-semibold mb-2">Post a Job</h4>
+                                <p class="text-sm text-slate-400">Create your first task</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-xl p-6 text-center">
+                                <i class="fas fa-search text-3xl text-teal-400 mb-3"></i>
+                                <h4 class="font-semibold mb-2">Browse Workers</h4>
+                                <p class="text-sm text-slate-400">Find verified help</p>
+                            </div>
+                            <div class="bg-slate-800 rounded-xl p-6 text-center">
+                                <i class="fas fa-history text-3xl text-teal-400 mb-3"></i>
+                                <h4 class="font-semibold mb-2">My Bookings</h4>
+                                <p class="text-sm text-slate-400">Track your tasks</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Worker Dashboard with Guardrail -->
+                    <div id="worker-dashboard" class="hidden">
+                        <!-- The Guardrail -->
+                        <div class="bg-orange-500/20 border border-orange-500/30 rounded-xl p-6 mb-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-orange-400 mb-2">Complete Your Profile</h4>
+                                    <p class="text-sm text-orange-200 mb-4">
+                                        Your profile is currently invisible to hirers. Complete these steps to start receiving job offers.
+                                    </p>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800 transition" onclick="toggleWorkerStep(this)">
+                                            <div class="w-6 h-6 rounded-full border-2 border-orange-400 flex items-center justify-center checkbox-indicator">
+                                                <i class="fas fa-check text-xs text-transparent"></i>
+                                            </div>
+                                            <span class="text-sm">Select Service Category</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800 transition" onclick="toggleWorkerStep(this)">
+                                            <div class="w-6 h-6 rounded-full border-2 border-orange-400 flex items-center justify-center checkbox-indicator">
+                                                <i class="fas fa-check text-xs text-transparent"></i>
+                                            </div>
+                                            <span class="text-sm">Upload Verification Documents (e.g., Driver's License)</span>
+                                        </div>
+                                        <div class="flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-800 transition" onclick="toggleWorkerStep(this)">
+                                            <div class="w-6 h-6 rounded-full border-2 border-orange-400 flex items-center justify-center checkbox-indicator">
+                                                <i class="fas fa-check text-xs text-transparent"></i>
+                                            </div>
+                                            <span class="text-sm">Add Portfolio/Work Samples</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Locked Marketplace Preview -->
+                        <div class="relative">
+                            <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm rounded-xl flex items-center justify-center z-10" id="marketplace-lock">
+                                <div class="text-center">
+                                    <i class="fas fa-lock text-4xl text-slate-500 mb-3"></i>
+                                    <p class="text-slate-400 font-semibold">Complete profile to unlock</p>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 opacity-50">
+                                <div class="bg-slate-800 rounded-xl p-6 text-center">
+                                    <i class="fas fa-briefcase text-3xl text-slate-500 mb-3"></i>
+                                    <h4 class="font-semibold mb-2 text-slate-400">Available Jobs</h4>
+                                </div>
+                                <div class="bg-slate-800 rounded-xl p-6 text-center">
+                                    <i class="fas fa-wallet text-3xl text-slate-500 mb-3"></i>
+                                    <h4 class="font-semibold mb-2 text-slate-400">Earnings</h4>
+                                </div>
+                                <div class="bg-slate-800 rounded-xl p-6 text-center">
+                                    <i class="fas fa-star text-3xl text-slate-500 mb-3"></i>
+                                    <h4 class="font-semibold mb-2 text-slate-400">Reviews</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="resetOnboarding()" class="mt-6 text-sm text-slate-400 hover:text-white transition">
+                        <i class="fas fa-redo mr-2"></i>Restart Demo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-center gap-4 mt-8">
+                <button onclick="prevStep()" id="prev-btn" class="hidden px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-full text-sm font-medium transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back
+                </button>
+                <button onclick="nextStep()" id="next-btn" class="hidden px-6 py-2 bg-teal-600 hover:bg-teal-700 rounded-full text-sm font-medium transition">
+                    Next<i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1194,6 +1512,237 @@
                 });
             });
         });
+
+        
+        // Onboarding Flow Functions
+        let currentOnboardStep = 1;
+        let selectedRole = null;
+        let workerStepsCompleted = 0;
+
+        function goToStep(step) {
+            // Hide current step
+            document.querySelectorAll('.onboard-step').forEach(el => el.classList.add('hidden'));
+
+            // Show new step
+            document.getElementById(`onboard-step-${step}`).classList.remove('hidden');
+
+            // Update progress indicator
+            updateProgress(step);
+
+            // Update navigation buttons
+            currentOnboardStep = step;
+            updateNavButtons();
+
+            // Scroll to onboarding section
+            document.getElementById('onboarding-flow').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function updateProgress(step) {
+            const dots = document.querySelectorAll('.step-dot');
+            const lines = document.querySelectorAll('.step-line');
+
+            dots.forEach((dot, index) => {
+                if (index < step) {
+                    dot.classList.remove('bg-slate-600');
+                    dot.classList.add('bg-teal-400');
+                } else {
+                    dot.classList.remove('bg-teal-400');
+                    dot.classList.add('bg-slate-600');
+                }
+            });
+
+            lines.forEach((line, index) => {
+                if (index < step - 1) {
+                    line.classList.remove('bg-slate-600');
+                    line.classList.add('bg-teal-400');
+                } else {
+                    line.classList.remove('bg-teal-400');
+                    line.classList.add('bg-slate-600');
+                }
+            });
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (currentOnboardStep > 1 && currentOnboardStep < 5) {
+                prevBtn.classList.remove('hidden');
+            } else {
+                prevBtn.classList.add('hidden');
+            }
+
+            // Next button is hidden - we use form submissions instead
+            nextBtn.classList.add('hidden');
+        }
+
+        function prevStep() {
+            if (currentOnboardStep > 1) {
+                goToStep(currentOnboardStep - 1);
+            }
+        }
+
+        function nextStep() {
+            if (currentOnboardStep < 5) {
+                goToStep(currentOnboardStep + 1);
+            }
+        }
+
+        function simulateFaceMatch() {
+            const placeholder = document.getElementById('camera-placeholder');
+            const scanning = document.getElementById('face-scanning');
+            const success = document.getElementById('face-success');
+            const continueBtn = document.getElementById('continue-btn-3');
+
+            placeholder.classList.add('hidden');
+            scanning.classList.remove('hidden');
+
+            setTimeout(() => {
+                scanning.classList.add('hidden');
+                success.classList.remove('hidden');
+
+                // Enable continue button
+                continueBtn.disabled = false;
+                continueBtn.classList.remove('bg-slate-600', 'text-slate-400', 'cursor-not-allowed');
+                continueBtn.classList.add('bg-teal-600', 'text-white', 'hover:bg-teal-700');
+
+                // Trigger email notification
+                showToast('Identity Verified email sent!');
+            }, 2000);
+        }
+
+        function selectRole(role) {
+            selectedRole = role;
+
+            // Visual selection
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('border-teal-500', 'bg-slate-700');
+                card.classList.add('border-slate-600', 'bg-slate-800');
+            });
+
+            const selectedCard = document.getElementById(`role-${role}`);
+            selectedCard.classList.remove('border-slate-600', 'bg-slate-800');
+            selectedCard.classList.add('border-teal-500', 'bg-slate-700');
+
+            // Enable continue button
+            const continueBtn = document.getElementById('continue-btn-4');
+            continueBtn.disabled = false;
+            continueBtn.classList.remove('bg-slate-600', 'text-slate-400', 'cursor-not-allowed');
+            continueBtn.classList.add('bg-teal-600', 'text-white', 'hover:bg-teal-700');
+        }
+
+        function showStep5() {
+            goToStep(5);
+
+            // Show appropriate dashboard
+            if (selectedRole === 'hirer') {
+                document.getElementById('hirer-dashboard').classList.remove('hidden');
+                document.getElementById('worker-dashboard').classList.add('hidden');
+                document.getElementById('dashboard-subtitle').textContent = 'Hirer Dashboard - Start posting jobs!';
+            } else {
+                document.getElementById('hirer-dashboard').classList.add('hidden');
+                document.getElementById('worker-dashboard').classList.remove('hidden');
+                document.getElementById('dashboard-subtitle').textContent = 'Worker Dashboard - Complete your profile to get hired';
+            }
+        }
+
+        function toggleWorkerStep(element) {
+            const checkbox = element.querySelector('.checkbox-indicator');
+            const checkIcon = checkbox.querySelector('i');
+
+            if (checkbox.classList.contains('bg-orange-400')) {
+                // Uncheck
+                checkbox.classList.remove('bg-orange-400', 'border-orange-400');
+                checkbox.classList.add('border-orange-400');
+                checkIcon.classList.add('text-transparent');
+                checkIcon.classList.remove('text-white');
+                workerStepsCompleted--;
+            } else {
+                // Check
+                checkbox.classList.add('bg-orange-400', 'border-orange-400');
+                checkIcon.classList.remove('text-transparent');
+                checkIcon.classList.add('text-white');
+                workerStepsCompleted++;
+
+                // Show completion message when all done
+                if (workerStepsCompleted === 3) {
+                    showToast('Profile complete! Marketplace unlocked!');
+                    setTimeout(() => {
+                        document.getElementById('marketplace-lock').classList.add('hidden');
+                        document.querySelector('#worker-dashboard .grid').classList.remove('opacity-50');
+                    }, 1000);
+                }
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-teal-600 text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-slide-up';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function resetOnboarding() {
+            currentOnboardStep = 1;
+            selectedRole = null;
+            workerStepsCompleted = 0;
+
+            // Reset all forms and states
+            document.querySelectorAll('input').forEach(input => {
+                if (input.type !== 'button' && input.type !== 'submit') {
+                    input.value = '';
+                }
+            });
+
+            // Reset face match
+            document.getElementById('camera-placeholder').classList.remove('hidden');
+            document.getElementById('face-scanning').classList.add('hidden');
+            document.getElementById('face-success').classList.add('hidden');
+
+            const continueBtn3 = document.getElementById('continue-btn-3');
+            continueBtn3.disabled = true;
+            continueBtn3.classList.add('bg-slate-600', 'text-slate-400', 'cursor-not-allowed');
+            continueBtn3.classList.remove('bg-teal-600', 'text-white', 'hover:bg-teal-700');
+
+            // Reset role selection
+            document.querySelectorAll('.role-card').forEach(card => {
+                card.classList.remove('border-teal-500', 'bg-slate-700');
+                card.classList.add('border-slate-600', 'bg-slate-800');
+            });
+
+            const continueBtn4 = document.getElementById('continue-btn-4');
+            continueBtn4.disabled = true;
+            continueBtn4.classList.add('bg-slate-600', 'text-slate-400', 'cursor-not-allowed');
+            continueBtn4.classList.remove('bg-teal-600', 'text-white', 'hover:bg-teal-700');
+
+            // Reset worker steps
+            document.querySelectorAll('.checkbox-indicator').forEach(box => {
+                box.classList.remove('bg-orange-400');
+                box.classList.add('border-orange-400');
+                box.querySelector('i').classList.add('text-transparent');
+                box.querySelector('i').classList.remove('text-white');
+            });
+
+            document.getElementById('marketplace-lock').classList.remove('hidden');
+            document.querySelector('#worker-dashboard .grid').classList.add('opacity-50');
+
+            goToStep(1);
+        }
+
+        // Override the original goToStep to handle step 5 specially
+        const originalGoToStep = goToStep;
+        goToStep = function(step) {
+            if (step === 5) {
+                showStep5();
+            } else {
+                originalGoToStep(step);
+            }
+        };
+
 
         // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
